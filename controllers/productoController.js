@@ -29,6 +29,7 @@ exports.getById = async (req, res) => {
  */
 exports.create = async (req, res) => {
   try {
+    console.log('BODY RECIBIDO:', req.body);
     const producto = await productoService.create(req.body);
     res.status(201).json(producto);
   } catch (error) {
