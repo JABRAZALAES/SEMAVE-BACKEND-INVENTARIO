@@ -5,6 +5,8 @@ const Producto = require('./models/Producto');
 const Movimiento = require('./models/Movimiento');
 const productoRoutes = require('./routes/productoRoutes');
 const movimientoRoutes = require('./routes/movimientoRoutes');
+const filtroAceiteRoutes = require('./routes/filtroAceiteRoutes');
+const FiltroAceite = require('./models/FiltroAceite');
 const cors = require('cors');
 
 const app = express();
@@ -23,6 +25,9 @@ app.use('/api/movimientos', movimientoRoutes);
 app.get('/', (req, res) => {
   res.send('API Inventario funcionando 🚀');
 });
+
+// Rutas de filtros de aceite
+app.use('/api/filtros-aceite', filtroAceiteRoutes);
 
 // Puerto asignado por Railway o 3000 por defecto
 const PORT = process.env.PORT || 3000;
