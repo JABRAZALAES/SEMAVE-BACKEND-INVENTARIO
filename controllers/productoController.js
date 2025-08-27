@@ -6,7 +6,25 @@ const productoService = require('../services/productoService');
 exports.getAll = async (req, res) => {
   try {
     const productos = await productoService.getAll();
-    res.json(productos);
+    // Mapear 'Aplicacions' a 'aplicaciones' en cada producto
+    const productosMap = productos.map(p => {
+      const { Aplicacions, ...rest } = p.toJSON();
+      // Agregar stock_total a cada aplicación
+      const aplicaciones = Aplicacions.map(app => {
+        const stock_percha = app.ProductoAplicacion?.stock_percha || 0;
+        const stock_caja = app.ProductoAplicacion?.stock_caja || 0;
+        const linea = app.ProductoAplicacion?.linea || null;
+        const codigo_aplicacion = app.ProductoAplicacion?.codigo_aplicacion || null;
+        return {
+          ...app,
+          stock_total: stock_percha + stock_caja,
+          linea,
+          codigo_aplicacion
+        };
+      });
+      return { ...rest, aplicaciones };
+    });
+    res.json(productosMap);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -18,7 +36,21 @@ exports.getAll = async (req, res) => {
 exports.getById = async (req, res) => {
   try {
     const producto = await productoService.getById(req.params.id);
-    res.json(producto);
+    // Mapear 'Aplicacions' a 'aplicaciones'
+    const { Aplicacions, ...rest } = producto.toJSON();
+    const aplicaciones = Aplicacions.map(app => {
+      const stock_percha = app.ProductoAplicacion?.stock_percha || 0;
+      const stock_caja = app.ProductoAplicacion?.stock_caja || 0;
+      const linea = app.ProductoAplicacion?.linea || null;
+      const codigo_aplicacion = app.ProductoAplicacion?.codigo_aplicacion || null;
+      return {
+        ...app,
+        stock_total: stock_percha + stock_caja,
+        linea,
+        codigo_aplicacion
+      };
+    });
+    res.json({ ...rest, aplicaciones });
   } catch (error) {
     res.status(404).json({ error: error.message });
   }
